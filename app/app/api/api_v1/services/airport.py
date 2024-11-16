@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-
+                                                    
 from app import crud
 from app import exceptions as exc
-from app import models, schemas
+from app import schemas
 from app.utils import MessageCodes
 from datetime import datetime
 

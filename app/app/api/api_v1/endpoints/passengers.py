@@ -21,14 +21,14 @@ async def read_passengers(
     db:AsyncSession=Depends(deps.get_db_async()),
     user_in: int = None,
     _: models.User = Depends(deps.get_current_superuser_from_cookie_or_basic),
-)->APIResponseType[schemas.PassengerResponse]:
+)-> APIResponseType[schemas.PassengerResponse]:
     
     response = await services.read_passengers(db=db,user_in=user_in)
 
     return APIResponse(response)
 
 
-@round.post('/register/passenger')
+@router.post('/register/passenger')
 @cache(namespace=namespace, expire=ONE_DAY_IN_SECONDS)
 async def create_passenger(
     user_in: schemas.PassengerCreate,
@@ -38,7 +38,7 @@ async def create_passenger(
     db: AsyncSession = Depends(deps.get_db_async),
     _:models.User = Depends(deps.get_current_superuser_from_cookie)
 
-)->APIResponseType[schemas.PassengerResponse]:
+)-> APIResponseType[schemas.PassengerResponse]:
     "Create the new passenger"
     response = await services.create_passenger(
         db=db,

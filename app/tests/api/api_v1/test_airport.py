@@ -30,14 +30,14 @@ class TestAirport:
             client: AsyncClient
     )-> None:
         # normal register
-        response = await client.get(
+        response = await client.post(
             f"{settings.API_V1_STR}/",
             json=self.data
         )
         assert response.status_code == 200
 
         # duplicate register
-        response = await client.get(
+        response = await client.post(
             f"{settings.API_V1_STR}/",
             json=self.data
         )
