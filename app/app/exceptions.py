@@ -1,10 +1,8 @@
 import logging
 import traceback
 from typing import Any
-
 from fastapi import HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError, ResponseValidationError
-
 from app import utils
 from app.core.config import settings
 

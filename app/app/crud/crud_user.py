@@ -67,4 +67,5 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return user.is_superuser
 
 
+
 user = CRUDUser(User)

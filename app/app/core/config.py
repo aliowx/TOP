@@ -54,7 +54,7 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v
         raise ValueError(v)
-
+    
     @property
     def allow_origins(self) -> list[str]:
         return [str(origin).strip("/") for origin in self.BACKEND_CORS_ORIGINS]

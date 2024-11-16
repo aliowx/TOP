@@ -15,3 +15,6 @@ class CRUDFlight(CRUDBase[Flight, FlightCreate, FlightUpdate]):
     limit: int = 100
 ):
         pass
+
+
+flight = CRUDFlight(Flight)

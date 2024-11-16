@@ -51,7 +51,7 @@ def event_loop(request) -> Generator:  # noqa: indirect usage
 
 
 @pytest_asyncio.fixture(scope="session")
-async def db() -> AsyncSession:
+async def db() -> AsyncSession: # type: ignore
 
     async with async_session() as session:
         async with async_engine.begin() as connection:
@@ -64,7 +64,7 @@ async def db() -> AsyncSession:
 
 
 @pytest_asyncio.fixture(scope="module")
-async def client() -> AsyncClient:
+async def client() -> AsyncClient: # type: ignore
     async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
 
