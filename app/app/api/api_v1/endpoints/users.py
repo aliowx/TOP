@@ -45,7 +45,6 @@ async def read_user_by_id(
 
 
 @router.put("/{user_id}")
-@invalidate(namespace=namespace)
 async def update_user(
     user_id: int,
     user_in: schemas.UserUpdate,

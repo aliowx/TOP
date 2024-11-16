@@ -1,11 +1,7 @@
 import pytest
-
-from httpx import AsyncClient, BasicAuth
+from httpx import AsyncClient 
 from datetime import datetime
 from app.core.config import settings
-
-
-
 
 @pytest.mark.asyncio
 class TestAirport:
@@ -45,7 +41,7 @@ class TestAirport:
 
     async def test_multiplt_requests(self, client: AsyncClient):
         for i in range(10):
-            response = await client.get(
+            response = await client.post(
                 f'{settings.API_V1_STR}/',
                 json=self.data
             )

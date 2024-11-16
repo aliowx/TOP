@@ -9,5 +9,3 @@ async def fetch_flights_from_source(url: str, params: dict)-> list[dict]:
         response.raise_for_status()
         return response.json()
     
-
-    
