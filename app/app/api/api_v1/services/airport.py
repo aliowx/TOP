@@ -1,9 +1,7 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-                                                    
+from sqlalchemy.ext.asyncio import AsyncSession                            
 from app import crud
 from app import exceptions as exc
 from app import schemas
-from app.utils import MessageCodes
 from datetime import datetime
 
 async def read_airports(
@@ -23,12 +21,11 @@ async def read_airports(
         date=date,
         way=way,
         specific_day=specific_day
-
     )
+    
     if not airport:
         raise exc.NotFoundException(
-            detail="there isn't any airport here! sorry"
+            detail="There isn't any airport here! sorry"
             
         )
     return airport
-

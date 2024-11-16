@@ -11,4 +11,5 @@ class Order(Base):
     order_data = mapped_column(DateTime)
     user_id = mapped_column(Integer, ForeignKey('user.id'))
 
+    tickets = relationship("Ticket", back_populates="order")
     user = relationship("User", back_populates='orders')

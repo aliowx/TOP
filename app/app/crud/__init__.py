@@ -4,3 +4,4 @@ from .crud_airport import airport
 from .crud_flight import flight
 from .crud_order import order
 from .crud_passenger import pasenger
+from .crud_ticket import ticket
