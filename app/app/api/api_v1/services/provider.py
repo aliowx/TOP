@@ -3,7 +3,9 @@ from app import exceptions as exc
 import httpx
 from datetime import datetime
 import asyncio
+import logging
 
+logger = logging.getLogger(__name__)
 
 class FlightProvider(ABC):
     @abstractmethod
@@ -28,22 +30,21 @@ class provider_A(FlightProvider):
         async with httpx.AsyncClient() as client:
             response = await client.get('')
             try:
-                if response == 200:
+                if response.status_code == 200:
                     return response.json()
             
-            except ConnectionError as c:
-                print('this is erro to conect the provider_A')
-                    
+            except ConnectionError as e:
+                logger.error(f'Error conecting to {str(e)}')    
         
     async def purchase_ticket(self, flight_id: int):
         async with httpx.AsyncClient() as clinet:
             response = await clinet.get('')
             try:
-                if response ==200:
+                if response.status_code ==200:
                     return response.json()
                 
-            except ConnectionError as c:
-                print('try again latter to buy ticket')
+            except ConnectionError as e:
+                logger.error(f'Error conecting to {str(e)}')
 
     
 class provider_B(FlightProvider):
@@ -95,7 +96,7 @@ class FlightService:
         
         
         for provider in self.providers:
-            tasks.append(provider.search_flights(route,origin,destination,date,way,specific_day))
+            tasks.append(provider.search_flights(route, origin, destination, date, way, specific_day))
             
         flight_result = await asyncio.gather(*tasks)
       
@@ -113,4 +114,3 @@ class FlightService:
                 detail=(f'provider {provider_name} not found')
             )
         return provider.purchase_ticket(flight_id=flight_id)
-    
