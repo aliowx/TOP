@@ -29,3 +29,10 @@ async def purchase_ticket(
     )
     
     return order
+
+
+async def get_ticket_id(
+    db:AsyncSession,
+    
+):
+    pass

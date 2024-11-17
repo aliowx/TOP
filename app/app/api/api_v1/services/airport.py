@@ -4,6 +4,7 @@ from app import exceptions as exc
 from app import schemas
 from datetime import datetime
 
+
 async def read_airports(
     db: AsyncSession,
     origin: str = None,
@@ -24,7 +25,9 @@ async def read_airports(
     )
     
     if not airport:
+        
         raise exc.NotFoundException(
+            
             detail="There isn't any airport here! sorry"
             
         )
