@@ -40,14 +40,17 @@ class TestAirport:
         assert response.status_code == 409
 
     async def test_multiplt_requests(self, client: AsyncClient):
+        
         for i in range(10):
             response = await client.post(
                 f'{settings.API_V1_STR}/',
                 json=self.data
             )
+            
             try:
                 assert response.status_code == 200
-            except:
+                
+            except:                
                 assert response.status_code == 404
 
     async def test_missing_data(
