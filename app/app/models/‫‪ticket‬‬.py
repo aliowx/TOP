@@ -3,6 +3,7 @@ from sqlalchemy.orm import mapped_column, relationship
 from app.db import Base
 
 class Ticket(Base):
+    
     __tablename__ = 'tickets'
 
     id = mapped_column(Integer, primary_key=True, autoincrement=True)
