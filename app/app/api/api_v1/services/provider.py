@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from app import exceptions as exc
 import httpx
 from datetime import datetime
-
+import asyncio
 
 
 class FlightProvider(ABC):
@@ -59,14 +59,12 @@ class provider_B(FlightProvider):
         async with httpx.AsyncClient() as client:
             response = await client.get('')
             try:
-                if response == 200:
+                if response.status_code == 200:
                     return response.json()
             
-            except ConnectionError as c:
-                print('this is erro to conect the provider_B')
+            except ConnectionError as e:
+                print(f'Error connecting to provider: {str(e)}')
                     
-                    
-
     async def purchase_ticket(self, flight_id: int):
         async with httpx.AsyncClient() as clinet:
             response = await clinet.get('')
@@ -93,10 +91,16 @@ class FlightService:
         specific_day: datetime
     ):
 
-        flights = []
+        tasks = []
+        
         
         for provider in self.providers:
-            flights.extend(provider.search_flights(route))
+            tasks.append(provider.search_flights(route,origin,destination,date,way,specific_day))
+            
+        flight_result = await asyncio.gather(*tasks)
+      
+        flights = [i for i in flight_result]
+            
         return flights
     
     async def purchase_ticket(self,flight_id: int, provider_name: str):
@@ -109,3 +113,4 @@ class FlightService:
                 detail=(f'provider {provider_name} not found')
             )
         return provider.purchase_ticket(flight_id=flight_id)
+    

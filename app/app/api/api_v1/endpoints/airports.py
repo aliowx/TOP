@@ -32,7 +32,14 @@ async def read_airports(
 
 )-> list[schemas.Ariport]:
     
-    response = await flight_service.search_all_flights(route=route)
+    response = await flight_service.search_all_flights(
+        route=route,
+        origin=origin,
+        destination=destination,
+        date=date,
+        way=way,
+        specific_day=specific_day
+    )
     return APIResponse(response)
 
 
