@@ -9,7 +9,7 @@ class Passenger(Base):
 
     national_id = mapped_column(Integer, primary_key=True,)
     age = mapped_column(Integer, index=True)
-    gender = mapped_column(String, idnex=True)    
+    gender = mapped_column(String, index=True)    
     name =  mapped_column(String, index=True)
     user_id = mapped_column(Integer, ForeignKey('users.id'), nullable=True)
 

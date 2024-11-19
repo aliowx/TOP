@@ -10,7 +10,7 @@ async def read_user_by_id(
     user_id: int,
     current_user: models.User,
     db: AsyncSession,
-) -> schemas.User:
+) -> schemas.UserBase:
     user = await crud.user.get(db, id_=user_id)
     if not user:
         raise exc.NotFoundException(
@@ -26,13 +26,12 @@ async def read_user_by_id(
         )
     return user
 
-
 async def update_user(
     user_id: int,
     user_in: schemas.UserUpdate,
     db: AsyncSession,
     current_user: models.User,
-) -> schemas.User:
+) -> schemas.UserBase:
     if not current_user.is_superuser:
         if not current_user.id == user_id:
             raise exc.ForbiddenException(
@@ -42,6 +41,7 @@ async def update_user(
 
     user = await crud.user.get(db, id_=user_id)
     if not user:
+        
         raise exc.NotFoundException(
             detail="The user with this username does not exist",
             msg_code=MessageCodes.not_found,

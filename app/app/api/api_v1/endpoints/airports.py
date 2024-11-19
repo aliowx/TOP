@@ -30,7 +30,7 @@ async def read_airports(
         way: str = None,
         specific_day: datetime = None
 
-)-> list[schemas.Ariport]:
+)-> list[schemas.AirportBase]:
     
     response = await flight_service.search_all_flights(
         route=route,

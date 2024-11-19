@@ -5,7 +5,10 @@ from datetime import datetime
 import asyncio
 import logging
 
+
+
 logger = logging.getLogger(__name__)
+
 
 class FlightProvider(ABC):
     @abstractmethod
@@ -17,7 +20,8 @@ class FlightProvider(ABC):
         pass
 
 
-class provider_A(FlightProvider):
+
+class providerA(FlightProvider):
     async def search_flights(
         self, 
         route: str,
@@ -47,7 +51,7 @@ class provider_A(FlightProvider):
                 logger.error(f'Error conecting to {str(e)}')
 
     
-class provider_B(FlightProvider):
+class providerB(FlightProvider):
     async def search_flights(
         self, 
         route: str,
@@ -71,7 +75,7 @@ class provider_B(FlightProvider):
             response = await clinet.get('')
             try:
                 
-                if response ==200:
+                if response.status_code ==200:
                     return response.json()
                 
             except ConnectionError as c:
@@ -93,17 +97,24 @@ class FlightService:
     ):
 
         tasks = []
-        
-        
+            
+            
         for provider in self.providers:
-            tasks.append(provider.search_flights(route, origin, destination, date, way, specific_day))
+            tasks.append(
+                asyncio.create_task(
+                provider.search_flights(route, origin, destination, date, way, specific_day)
+                )
+            )
             
-        flight_result = await asyncio.gather(*tasks)
-      
-        flights = [i for i in flight_result]
-            
-        return flights
-    
+        flight_results = []
+        for task in asyncio.as_completed(tasks):
+            try:
+                result = await task
+                flight_results.append(result)
+            except  Exception as e:
+                logger.error(f'There is a fetching error: {e}')
+        
+        return flight_results
     async def purchase_ticket(self,flight_id: int, provider_name: str):
         
         provider = next(
@@ -114,3 +125,5 @@ class FlightService:
                 detail=(f'provider {provider_name} not found')
             )
         return provider.purchase_ticket(flight_id=flight_id)
+    
+    

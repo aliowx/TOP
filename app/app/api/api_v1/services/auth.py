@@ -9,7 +9,7 @@ from app.core.config import REFRESH_TOKEN_BLOCKLIST_KEY, ACCESS_TOKEN_BLOCKLIST_
 from app.core.security import JWTHandler
 
 
-async def register(db: AsyncSession, user_in: schemas.UserCreate) -> schemas.User:
+async def register(db: AsyncSession, user_in: schemas.UserCreate) -> schemas.UserBase:
     user = await crud.user.get_by_email(db=db, email=user_in.email)
     if user:
         raise exc.AlreadyExistException(
@@ -20,7 +20,7 @@ async def register(db: AsyncSession, user_in: schemas.UserCreate) -> schemas.Use
     return user
 
 
-async def login(db: AsyncSession, user_in: schemas.LoginUser) -> schemas.Token:
+async def login(db: AsyncSession, user_in: schemas.LoginUser) -> None:
     user = await crud.user.authenticate(
         db=db, email=user_in.email, password=user_in.password
     )

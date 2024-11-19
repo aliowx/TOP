@@ -106,7 +106,7 @@ async def get_user_id_from_cookie(
 async def get_current_user_from_cookie(
     db: AsyncSession = Depends(get_db_async),
     current_user_id: int = Depends(get_user_id_from_cookie),
-) -> schemas.User:
+) -> schemas.UserInDBBase:
 
     current_user = await crud.user.get(db=db, id_=current_user_id)
 

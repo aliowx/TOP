@@ -21,7 +21,7 @@ async def login(
     response: Response,
     user_in: schemas.LoginUser,
     db: AsyncSession = Depends(deps.get_db_async),
-) -> APIResponseType[schemas.Msg]:
+) -> APIResponseType:
     """Save User Refresh and Access Token to cookie"""
 
     tokens = await services.login(db=db, user_in=user_in)
@@ -52,7 +52,7 @@ async def register(
     user_in: schemas.UserCreate,
     db: AsyncSession = Depends(deps.get_db_async),
     current_user: models.User = Depends(deps.get_current_superuser_from_cookie_or_basic),
-) -> APIResponseType[schemas.User]:
+) -> APIResponseType[schemas.UserBase]:
     """Register new user"""
     response = await services.register(db=db, user_in=user_in)
     return APIResponse(response)
@@ -60,8 +60,8 @@ async def register(
 
 @router.get("/me")
 async def me(
-    current_user: schemas.User = Depends(deps.get_current_user_from_cookie_or_basic),
-) -> APIResponseType[schemas.User]:
+    current_user: schemas.UserBase = Depends(deps.get_current_user_from_cookie_or_basic),
+) -> APIResponseType[schemas.UserBase]:
     """Retrieve current user"""
     return APIResponse(current_user)
 
@@ -71,7 +71,7 @@ async def logout(
     request: Request,
     response: Response,
     cache: client.Redis = Depends(deps.get_redis),
-) -> APIResponseType[schemas.Msg]:
+) -> APIResponseType:
     """Logout from system"""
 
     await services.logout(

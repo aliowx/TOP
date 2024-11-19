@@ -3,19 +3,22 @@ from typing import Any
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import and_, select,desc
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models import pasenger
+from app.models import Passenger
 from app.core.security import get_password_hash, verify_password
 from app.crud.base import CRUDBase
 from app.db.base_class import Base
+from app.models import Passenger
+
 
 from app.schemas.passenger import PassengerCreate, PassengerCreate
 
-class CRUDPassenger(CRUDBase[PassengerCreate,PassengerCreate]):
+class CRUDPassenger(CRUDBase[Passenger,PassengerCreate, PassengerCreate]):
+
     async def get_passenger(
             self,
             db:AsyncSession,
             user_id: int
-    )->list[pasenger]:
+    )->list[Passenger]:
         
         query = (
             select(pasenger)
@@ -49,4 +52,4 @@ class CRUDPassenger(CRUDBase[PassengerCreate,PassengerCreate]):
         db.add(new_passenger)
 
 
-pasenger = CRUDPassenger()
+pasenger = CRUDPassenger(Passenger)

@@ -20,7 +20,7 @@ async def read_users(
     skip: int = 0,
     limit: int = 100,
     current_user: models.User = Depends(deps.get_current_superuser_from_cookie_or_basic),
-) -> APIResponseType[list[schemas.User]]:
+) -> APIResponseType[list[schemas.UserBase]]:
     """
     Retrieve users.
     """
@@ -34,7 +34,7 @@ async def read_user_by_id(
     user_id: int,
     current_user: models.User = Depends(deps.get_current_superuser_from_cookie_or_basic),
     db: AsyncSession = Depends(deps.get_db_async),
-) -> APIResponseType[schemas.User]:
+) -> APIResponseType[schemas.UserBase]:
     """
     Get a specific user by id.
     """
@@ -50,7 +50,7 @@ async def update_user(
     user_in: schemas.UserUpdate,
     db: AsyncSession = Depends(deps.get_db_async),
     current_user: models.User = Depends(deps.get_current_user_from_cookie_or_basic),
-) -> APIResponseType[schemas.User]:
+) -> APIResponseType[list[schemas.UserBase]]:
     """
     Update a user.
     """
