@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class FlightProvider(ABC):
     @abstractmethod
-    def search_flights(self, route: str):
+    def search_flights(self, route: str, origin: str, destination: str, date: datetime, way: str, specific_day: datetime):
         pass
 
     @abstractmethod
@@ -20,8 +20,22 @@ class FlightProvider(ABC):
         pass
 
 
+class BaseProvider(FlightProvider):
+    BASE_URL = ''
+    
+    async def Make_requst(self, endpoint:str, params:dict):
+        async with httpx.AsyncClient(timeout=11) as client:
+            try:
+                response = await client.get(f'{self.BASE_URL}{endpoint}', params=params)
+                response.raise_for_status()
+                
+            except httpx.HTTPStatusError as e:
+                logger.error(f'Http error {self.BASE_URL} : {e}')
+                raise 
+            
 
-class providerA(FlightProvider):
+
+class providerA(BaseProvider):
     async def search_flights(
         self, 
         route: str,
@@ -51,7 +65,7 @@ class providerA(FlightProvider):
                 logger.error(f'Error conecting to {str(e)}')
 
     
-class providerB(FlightProvider):
+class providerB(BaseProvider):
     async def search_flights(
         self, 
         route: str,
@@ -83,8 +97,10 @@ class providerB(FlightProvider):
     
 
 class FlightService:
+    
     def __init__(self, providers: list[FlightProvider]):
         self.providers = providers
+    
         
     async def search_all_flights(
         self, 
@@ -107,14 +123,20 @@ class FlightService:
             )
             
         flight_results = []
+        
         for task in asyncio.as_completed(tasks):
+            
             try:
+                
                 result = await task
                 flight_results.append(result)
+                
             except  Exception as e:
                 logger.error(f'There is a fetching error: {e}')
         
         return flight_results
+    
+    
     async def purchase_ticket(self,flight_id: int, provider_name: str):
         
         provider = next(
