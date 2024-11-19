@@ -4,7 +4,7 @@ import httpx
 from datetime import datetime
 import asyncio
 import logging
-
+from tenacity import retry, wait_exponential, stop_after_attempt
 
 
 logger = logging.getLogger(__name__)
@@ -20,22 +20,41 @@ class FlightProvider(ABC):
         pass
 
 
+class ProviderException(Exception):
+    pass
+
+class FlightNotFoundException(Exception):
+    pass
+
+class TicketPurchaseException(Exception):
+    pass
+
+
+
+
 class BaseProvider(FlightProvider):
+    
     BASE_URL = ''
     
+    @retry(wait=wait_exponential(multiplier=1), stop=stop_after_attempt(3))
     async def Make_requst(self, endpoint:str, params:dict):
         async with httpx.AsyncClient(timeout=11) as client:
             try:
                 response = await client.get(f'{self.BASE_URL}{endpoint}', params=params)
                 response.raise_for_status()
-                
             except httpx.HTTPStatusError as e:
                 logger.error(f'Http error {self.BASE_URL} : {e}')
-                raise 
-            
+                raise ProviderException(f'HTTP error:{e.response.status_code}')
+            except httpx.ConnectTimeout:
+                logger.error(f'Timeout connecting to {self.BASE_URL}')
+                raise ProviderException('Connection timeout!')
+            except httpx.ReadError as ea:
+                logger.error(f'Error during requst to {self.BASE_URL}: {str(ea)}')
+                            
 
 
 class providerA(BaseProvider):
+    
     async def search_flights(
         self, 
         route: str,
@@ -45,25 +64,21 @@ class providerA(BaseProvider):
         way: str,
         specific_day: datetime
     ):
-        async with httpx.AsyncClient() as client:
-            response = await client.get('')
-            try:
-                if response.status_code == 200:
-                    return response.json()
-            
-            except ConnectionError as e:
-                logger.error(f'Error conecting to {str(e)}')    
-        
-    async def purchase_ticket(self, flight_id: int):
-        async with httpx.AsyncClient() as clinet:
-            response = await clinet.get('')
-            try:
-                if response.status_code ==200:
-                    return response.json()
-                
-            except ConnectionError as e:
-                logger.error(f'Error conecting to {str(e)}')
+        params = {
+            "route": route,
+            "origin": origin,
+            "destination": destination,
+            "date": date.strftime("%Y-%m-%d"),
+            "way": way,
+            "specific_day": specific_day.strftime("%Y-%m-%d"),
+        }
+        return  await self.Make_requst('/search', params)
 
+        
+    async def purchase_ticket(self, flight_id:int):
+        params = {"flight_id": flight_id}
+        return await self.Make_requst("/purchase", params)
+        
     
 class providerB(BaseProvider):
     async def search_flights(
@@ -75,26 +90,20 @@ class providerB(BaseProvider):
         way: str,
         specific_day: datetime
     ):
-        async with httpx.AsyncClient() as client:
-            response = await client.get('')
-            try:
-                if response.status_code == 200:
-                    return response.json()
-            
-            except ConnectionError as e:
-                print(f'Error connecting to provider: {str(e)}')
-                    
-    async def purchase_ticket(self, flight_id: int):
-        async with httpx.AsyncClient() as clinet:
-            response = await clinet.get('')
-            try:
-                
-                if response.status_code ==200:
-                    return response.json()
-                
-            except ConnectionError as c:
-                print('try again latter to buy ticket')
-    
+        params = {
+            "route": route,
+            "origin": origin,
+            "destination": destination,
+            "date": date.strftime("%Y-%m-%d"),
+            "way": way,
+            "specific_day": specific_day.strftime("%Y-%m-%d"),
+        }
+        return  await self.Make_requst('/search', params)
+
+        
+    async def purchase_ticket(self, flight_id:int):
+        params = {"flight_id": flight_id}
+        return await self.Make_requst("/purchase", params)
 
 class FlightService:
     
@@ -123,6 +132,7 @@ class FlightService:
             )
             
         flight_results = []
+        errors = []
         
         for task in asyncio.as_completed(tasks):
             
@@ -133,6 +143,10 @@ class FlightService:
                 
             except  Exception as e:
                 logger.error(f'There is a fetching error: {e}')
+                errors.append(str(e))
+        
+        if not flight_results:    
+            logger.error('')
         
         return flight_results
     
