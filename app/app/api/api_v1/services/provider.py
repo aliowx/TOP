@@ -1,3 +1,6 @@
+"""
+this is a Provider about the  get the ticket 
+"""
 from abc import ABC, abstractmethod
 from app import exceptions as exc
 import httpx
