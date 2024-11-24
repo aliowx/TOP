@@ -1,24 +1,24 @@
-from sqlalchemy import and_, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.crud.base import CRUDBase
-
 from app.schemas.airport import AirportCreate, AirportUpdate
 from typing import Optional, List
 from app.models import Airport
-
 from datetime import datetime
 
 class CRUDAirport(CRUDBase[Airport, AirportCreate, AirportUpdate]):
 
     async def get_airports(
-            self,
-            db: AsyncSession,
-            origin: Optional[str] = None,
-            destination: Optional[str] = None,
-            date: Optional[datetime] = None,
-            way: Optional[str] = None,
-            specific_day: Optional[datetime] = None,
+        self,
+        db: AsyncSession,
+        origin: Optional[str] = None,
+        destination: Optional[str] = None,
+        date: Optional[datetime] = None,
+        way: Optional[str] = None,
+        specific_day: Optional[datetime] = None,
+
     ) -> List[Airport]:
+        
         query = select(Airport)
 
         if origin:
@@ -43,4 +43,3 @@ class CRUDAirport(CRUDBase[Airport, AirportCreate, AirportUpdate]):
 
 
 airport = CRUDAirport(Airport)
-

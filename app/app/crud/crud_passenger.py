@@ -1,12 +1,8 @@
 from typing import Any
-
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy import and_, select,desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Passenger
-from app.core.security import get_password_hash, verify_password
 from app.crud.base import CRUDBase
-from app.db.base_class import Base
 from app.models import Passenger
 
 
