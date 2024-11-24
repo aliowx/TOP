@@ -59,3 +59,25 @@ class TestAirport:
     ):
         response = await client.get(f'{settings.API_V1_STR}/')
         assert response.status_code == 400
+
+    async def test_get_registered_flights(self, client: AsyncClient):
+
+        response = await client.post(
+            f"{settings.API_V1_STR}/",
+            json=self.data
+        )
+
+        assert response.status_code == 200
+        response = await client.get(f"{settings.API_V1_STR}/flights")
+        assert response.status_code == 200
+        flights = response.json()
+
+        assert isinstance(flights, list)
+        assert len(flights) > 0
+        first_flight = flights[0]
+
+        assert first_flight['origin'] == self.data['origin']
+        assert first_flight['destination'] == self.data['destination']
+        assert first_flight['date'] == self.data['date']
+        assert first_flight['way'] == self.data['way']
+        assert first_flight['specific_day'] == self.data['specific_day']
