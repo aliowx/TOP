@@ -7,7 +7,6 @@ class Ticket(Base):
     __tablename__ = 'tickets'
 
     id = mapped_column(Integer, primary_key=True, autoincrement=True)
-    purchase_id = mapped_column(Integer, ForeignKey('purchases.id'))
     order_id = mapped_column(Integer, ForeignKey('orders.code')) 
     price = mapped_column(Float)
     airline = mapped_column(String)

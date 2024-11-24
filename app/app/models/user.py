@@ -14,6 +14,5 @@ class User(Base):
     phone = mapped_column(String,nullable=False)
     hashed_password = mapped_column(String, nullable=False)
 
-    purchases = relationship("Purchase", back_populates="user")
     passengers = relationship("Passenger", back_populates="user")
     orders = relationship('Order', back_populates="user")

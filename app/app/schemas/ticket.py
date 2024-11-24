@@ -2,7 +2,6 @@ from typing import Optional
 from pydantic import BaseModel
 
 class TicketCreate(BaseModel):
-    purchase_id: int
     passenger_id: int
     ticket_code: str
     departure_time: str
@@ -16,7 +15,6 @@ class TicketCreate(BaseModel):
 
 class TicketResponse(BaseModel):
     id: int
-    purchase_id: int
     passenger_id: int
     ticket_code: str
     departure_time: str
@@ -28,7 +26,6 @@ class TicketResponse(BaseModel):
         
         
 class TicketUpdate(BaseModel):
-    purchase_id: Optional[int]
     passenger_id: Optional[int]
     ticket_code: Optional[str]
     departure_time: Optional[str]
@@ -40,7 +37,6 @@ class TicketUpdate(BaseModel):
 
 
 class TicketDelet(BaseModel):
-    purchase_id: Optional[int]
     passenger_id: Optional[int]
     ticket_code: Optional[str]
     departure_time: Optional[str]
