@@ -53,6 +53,7 @@ async def get_user_id_from_cookie(
     try:
         access_token = request.cookies.get("Access-Token")
         if not access_token:
+            logger.error('there is somethign happend')
             raise exc.UnauthorizedException(
                 msg_code=utils.MessageCodes.access_token_not_found,
             )

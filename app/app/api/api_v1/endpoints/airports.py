@@ -6,14 +6,15 @@ from app.schemas.airport import AirportBase
 from app.utils import APIResponse 
 from cache import cache
 from cache.util import ONE_DAY_IN_SECONDS
-from app.api.api_v1.services import provider_A, provider_B, FlightService
+from app.api.api_v1.services import providerA, providerB, FlightService
 from datetime  import datetime
 
 router = APIRouter()
+
 namespace = "airports"
 
 
-providers = [provider_A,provider_B]
+providers = [providerA,providerB]
 
 flight_service = FlightService(providers)
 

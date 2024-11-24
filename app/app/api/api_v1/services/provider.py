@@ -1,7 +1,5 @@
-"""
-this is a Provider about the  get the ticket 
-"""
 from abc import ABC, abstractmethod
+
 from app import exceptions as exc
 import httpx
 from datetime import datetime
@@ -14,14 +12,21 @@ logger = logging.getLogger(__name__)
 
 
 class FlightProvider(ABC):
+
     @abstractmethod
-    def search_flights(self, route: str, origin: str, destination: str, date: datetime, way: str, specific_day: datetime):
+    def search_flight(self,route: str, origin: str, destination: str, date: datetime, way: str, specific_day: datetime):
         pass
 
     @abstractmethod
     def purchase_ticket(self, flight_id: str):
         pass
+    
+    def __str__(self):
+        return super().__str__()
 
+
+class ProviderError(Exception):
+    pass
 
 class ProviderException(Exception):
     pass
@@ -31,8 +36,6 @@ class FlightNotFoundException(Exception):
 
 class TicketPurchaseException(Exception):
     pass
-
-
 
 
 class BaseProvider(FlightProvider):
@@ -154,7 +157,7 @@ class FlightService:
         return flight_results
     
     
-    async def purchase_ticket(self,flight_id: int, provider_name: str):
+    async def purchase_ticket(self, flight_id: int, provider_name: str):
         
         provider = next(
             (p for p in self.providers if provider_name.lower() in p.__class__.__name__.lower())
