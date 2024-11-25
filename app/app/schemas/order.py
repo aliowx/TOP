@@ -20,3 +20,8 @@ class Order(OrderBase):
 
     class Config:
         orm_mode = True 
+
+
+
+class OrderDelet(Order):
+    pass
