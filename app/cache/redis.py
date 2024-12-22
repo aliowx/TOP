@@ -4,9 +4,9 @@ from typing import Tuple
 
 import redis.asyncio as redis
 from redis.asyncio import client
-
+from redis import asyncio
 from cache.enums import RedisStatus
-
+from app.core.config import settings
 
 async def redis_connect(host_url: str) -> Tuple[RedisStatus, client.Redis]:
     """Attempt to connect to `host_url` and return a Redis client instance if successful."""
@@ -15,6 +15,18 @@ async def redis_connect(host_url: str) -> Tuple[RedisStatus, client.Redis]:
         if os.environ.get("CACHE_ENV") != "TEST"
         else _connect_fake()
     )
+    
+    
+# for we
+async def redis_connect_async(timeout: int = None)-> asyncio.Redis:
+    client = asyncio.from_url(
+        str(settings.REDIS_URI),
+        timeout=timeout,
+        decode_responses=True
+    )
+    return client 
+
+
 
 
 async def _connect(
@@ -29,6 +41,14 @@ async def _connect(
         return (RedisStatus.AUTH_ERROR, None)
     except redis.ConnectionError:
         return (RedisStatus.CONN_ERROR, None)
+
+def redis_connect_sync() -> client.Redis:
+    client = redis.from_url(
+        str(settings.REDIS_URI)
+    )
+    return client
+
+redis_client = redis_connect_sync()
 
 
 def _connect_fake() -> Tuple[RedisStatus, client.Redis]:
