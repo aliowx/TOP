@@ -20,7 +20,7 @@ def bootstrap(
     *args,
     **kwargs
 ) -> None:
-    global ScopedSession
+    global ScopedSessio
     engine = create_engine(
         str(settings.POSTGRES_ASYNC_URI), pool_pre_ping=True
     )
