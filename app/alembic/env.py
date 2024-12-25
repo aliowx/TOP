@@ -10,6 +10,8 @@ from alembic import context
 from app.db.base_class import Base
 from app.db.parser import CustomJSONEncoder, CustomJSONDecoder
 from app.core.config import settings
+# import all models to make sure Alembic can detect them
+from app.models import User, RequestLog, airport, Notifications, order, Passenger, ticket
 
 
 def get_url():

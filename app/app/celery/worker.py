@@ -31,7 +31,5 @@ logger = logging.getLogger(__name__)
     name='add event'  
 )
 def add_event(self, event: dict)->str:
-    try:
-        create_event = crud.airport.create(db=self.session, obj_in=event)
+    create_event = crud.airport.create(db=self.session, obj_in=event)
     
-    ...

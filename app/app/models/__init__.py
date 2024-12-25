@@ -1,6 +1,8 @@
 from .user import User
-from .order import Order
-from .order import Order
+
 from .request_log import RequestLog
-from .airport import Airport
-from .passenger import Passenger
+from .Airport import airport
+from .notification import Notifications
+from .Order import order
+from .Passenger import Passenger
+from .Ticket import ticket
